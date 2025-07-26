@@ -10,13 +10,21 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::active()->get();
+        $categories = Category::active()
+            ->withCount(['products' => function($query) {
+                $query->active();
+            }])
+            ->get();
+            
         return response()->json($categories);
     }
 
     public function show($id)
     {
-        $category = Category::with('products')->findOrFail($id);
+        $category = Category::with(['products' => function($query) {
+            $query->active();
+        }])->findOrFail($id);
+        
         return response()->json($category);
     }
 }

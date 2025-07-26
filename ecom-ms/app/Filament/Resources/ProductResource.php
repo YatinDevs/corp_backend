@@ -192,36 +192,27 @@ class ProductResource extends Resource
                     ])->columns(2),
                     
                 // Combo Products Section
-                Forms\Components\Section::make('Combo Products')
-                    ->schema([
-                        Forms\Components\Repeater::make('combo_products')
-                            ->schema([
-                                Forms\Components\Select::make('product_id')
-                                    ->label('Product')
-                                    ->options(Product::query()->where('type', 'single')->pluck('name', 'id'))
-                                    ->searchable()
-                                    ->required()
-                                    ->live()
-                                    ->afterStateUpdated(function ($state, Forms\Set $set) {
-                                        if ($state) {
-                                            $product = Product::find($state);
-                                            $set('price', $product->price);
-                                        }
-                                    }),
-                                    
-                                Forms\Components\TextInput::make('quantity')
-                                    ->numeric()
-                                    ->minValue(1)
-                                    ->default(1)
-                                    ->required(),
-                            ])
-                            ->columns(2)
-                            ->visible(fn (Forms\Get $get): bool => $get('type') === 'combo')
-                            ->minItems(1)
-                            ->itemLabel(fn (array $state): ?string => Product::find($state['product_id'])?->name)
-                            ->addActionLabel('Add Product to Combo')
-                            ->reorderable(),
-                    ]),
+               // In the Combo Products section of ProductResource
+Forms\Components\Section::make('Combo Products')
+    ->schema([
+        Forms\Components\Repeater::make('combo_products')
+            ->schema([
+                Forms\Components\Select::make('product_id')
+                    ->label('Product')
+                    ->options(Product::query()->where('type', 'single')->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
+                    
+                Forms\Components\TextInput::make('quantity')
+                    ->numeric()
+                    ->minValue(1)
+                    ->default(1)
+                    ->required(),
+            ])
+            ->columns(2)
+            ->visible(fn (Forms\Get $get): bool => $get('type') === 'combo')
+            ->itemLabel(fn (array $state): ?string => Product::find($state['product_id'])?->name)
+]),
                     
                 // Specifications Section
                 Forms\Components\Section::make('Specifications')
