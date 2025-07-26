@@ -38,19 +38,20 @@ class ProductResource extends Resource
                             ]),
                             
                         Forms\Components\TextInput::make('product_code')
-                            ->required()
-                            ->maxLength(50)
-                            ->unique(
-                                table: Product::class,
-                                column: 'product_code',
-                                ignoreRecord: true
-                            )
-                            ->rules([
-                                fn (): \Illuminate\Validation\Rules\Unique => (new \Illuminate\Validation\Rules\Unique('products', 'product_code'))
-                                    ->whereNull('deleted_at')
-                                    ->ignore($this->getRecord()?->getKey())
-                            ]),
-                            
+    ->required()
+    ->maxLength(50)
+    ->unique(
+        table: Product::class,
+        column: 'product_code',
+        ignoreRecord: true
+    )
+    ->rules([
+        function ($state, $component) {
+            return (new \Illuminate\Validation\Rules\Unique('products', 'product_code'))
+                ->whereNull('deleted_at')
+                ->ignore($component->getRecord()?->getKey());
+        }
+    ]),
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->maxLength(255)
@@ -63,19 +64,20 @@ class ProductResource extends Resource
                             }),
                             
                         Forms\Components\TextInput::make('slug')
-                            ->required()
-                            ->maxLength(255)
-                            ->unique(
-                                table: Product::class,
-                                column: 'slug',
-                                ignoreRecord: true
-                            )
-                            ->rules([
-                                fn (): \Illuminate\Validation\Rules\Unique => (new \Illuminate\Validation\Rules\Unique('products', 'slug'))
-                                    ->whereNull('deleted_at')
-                                    ->ignore($this->getRecord()?->getKey())
-                            ]),
-                            
+    ->required()
+    ->maxLength(255)
+    ->unique(
+        table: Product::class,
+        column: 'slug',
+        ignoreRecord: true
+    )
+    ->rules([
+        function ($state, $component) {
+            return (new \Illuminate\Validation\Rules\Unique('products', 'slug'))
+                ->whereNull('deleted_at')
+                ->ignore($component->getRecord()?->getKey());
+        }
+    ]),
                         Forms\Components\Textarea::make('description')
                             ->columnSpanFull(),
                             
@@ -142,18 +144,20 @@ class ProductResource extends Resource
                             ->visible(fn (Forms\Get $get): bool => $get('type') === 'single'),
                             
                         Forms\Components\TextInput::make('sku')
-                            ->maxLength(50)
-                            ->unique(
-                                table: Product::class,
-                                column: 'sku',
-                                ignoreRecord: true
-                            )
-                            ->visible(fn (Forms\Get $get): bool => $get('type') === 'single')
-                            ->rules([
-                                fn (): \Illuminate\Validation\Rules\Unique => (new \Illuminate\Validation\Rules\Unique('products', 'sku'))
-                                    ->whereNull('deleted_at')
-                                    ->ignore($this->getRecord()?->getKey())
-                            ]),
+    ->maxLength(50)
+    ->unique(
+        table: Product::class,
+        column: 'sku',
+        ignoreRecord: true
+    )
+    ->visible(fn (Forms\Get $get): bool => $get('type') === 'single')
+    ->rules([
+        function ($state, $component) {
+            return (new \Illuminate\Validation\Rules\Unique('products', 'sku'))
+                ->whereNull('deleted_at')
+                ->ignore($component->getRecord()?->getKey());
+        }
+    ]),
                             
                         Forms\Components\TextInput::make('barcode')
                             ->maxLength(50)
