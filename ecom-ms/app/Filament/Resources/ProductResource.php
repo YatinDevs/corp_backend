@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Category;
 use App\Models\Product;
 use Filament\Forms;
@@ -16,15 +15,15 @@ use Illuminate\Support\Str;
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-
     protected static ?string $navigationGroup = 'Shop';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                // Basic Information Section
                 Forms\Components\Section::make('Basic Information')
                     ->schema([
                         Forms\Components\Select::make('category_id')
@@ -40,19 +39,42 @@ class ProductResource extends Resource
                             
                         Forms\Components\TextInput::make('product_code')
                             ->required()
-                            ->maxLength(255)
-                            ->unique(Product::class, 'product_code', ignoreRecord: true),
+                            ->maxLength(50)
+                            ->unique(
+                                table: Product::class,
+                                column: 'product_code',
+                                ignoreRecord: true
+                            )
+                            ->rules([
+                                fn (): \Illuminate\Validation\Rules\Unique => (new \Illuminate\Validation\Rules\Unique('products', 'product_code'))
+                                    ->whereNull('deleted_at')
+                                    ->ignore($this->getRecord()?->getKey())
+                            ]),
                             
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                                if ($operation === 'create') {
+                                    $set('slug', Str::slug($state));
+                                    $set('product_code', strtoupper(Str::random(8)));
+                                }
+                            }),
                             
                         Forms\Components\TextInput::make('slug')
                             ->required()
                             ->maxLength(255)
-                            ->unique(Product::class, 'slug', ignoreRecord: true),
+                            ->unique(
+                                table: Product::class,
+                                column: 'slug',
+                                ignoreRecord: true
+                            )
+                            ->rules([
+                                fn (): \Illuminate\Validation\Rules\Unique => (new \Illuminate\Validation\Rules\Unique('products', 'slug'))
+                                    ->whereNull('deleted_at')
+                                    ->ignore($this->getRecord()?->getKey())
+                            ]),
                             
                         Forms\Components\Textarea::make('description')
                             ->columnSpanFull(),
@@ -62,9 +84,11 @@ class ProductResource extends Resource
                             ->multiple()
                             ->directory('products')
                             ->maxFiles(5)
-                            ->reorderable(),
+                            ->reorderable()
+                            ->imageEditor(),
                             
                         Forms\Components\Toggle::make('is_active')
+                            ->default(true)
                             ->required(),
                             
                         Forms\Components\Toggle::make('is_featured')
@@ -76,43 +100,67 @@ class ProductResource extends Resource
                                 'combo' => 'Combo Pack',
                             ])
                             ->required()
-                            ->live(),
+                            ->live()
+                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                if ($state === 'combo') {
+                                    $set('stock_quantity', 0);
+                                    $set('min_stock_threshold', 0);
+                                }
+                            }),
                     ])->columns(2),
                     
+                // Pricing & Inventory Section
                 Forms\Components\Section::make('Pricing & Inventory')
                     ->schema([
                         Forms\Components\TextInput::make('price')
                             ->required()
                             ->numeric()
+                            ->minValue(0.01)
                             ->prefix('$'),
                             
                         Forms\Components\TextInput::make('cost_price')
                             ->numeric()
+                            ->minValue(0)
                             ->prefix('$')
                             ->visible(fn (Forms\Get $get): bool => $get('type') === 'single'),
                             
                         Forms\Components\TextInput::make('discount_price')
                             ->numeric()
+                            ->minValue(0)
                             ->prefix('$')
-                            ->visible(fn (Forms\Get $get): bool => $get('type') === 'combo'),
+                            ->visible(fn (Forms\Get $get): bool => $get('type') === 'combo')
+                            ->lte('price'),
                             
                         Forms\Components\TextInput::make('stock_quantity')
                             ->numeric()
+                            ->minValue(0)
                             ->visible(fn (Forms\Get $get): bool => $get('type') === 'single'),
                             
                         Forms\Components\TextInput::make('min_stock_threshold')
                             ->numeric()
+                            ->minValue(0)
                             ->visible(fn (Forms\Get $get): bool => $get('type') === 'single'),
                             
                         Forms\Components\TextInput::make('sku')
-                            ->maxLength(255)
-                            ->visible(fn (Forms\Get $get): bool => $get('type') === 'single'),
+                            ->maxLength(50)
+                            ->unique(
+                                table: Product::class,
+                                column: 'sku',
+                                ignoreRecord: true
+                            )
+                            ->visible(fn (Forms\Get $get): bool => $get('type') === 'single')
+                            ->rules([
+                                fn (): \Illuminate\Validation\Rules\Unique => (new \Illuminate\Validation\Rules\Unique('products', 'sku'))
+                                    ->whereNull('deleted_at')
+                                    ->ignore($this->getRecord()?->getKey())
+                            ]),
                             
                         Forms\Components\TextInput::make('barcode')
-                            ->maxLength(255)
+                            ->maxLength(50)
                             ->visible(fn (Forms\Get $get): bool => $get('type') === 'single'),
                     ])->columns(3),
                     
+                // Shipping Information Section
                 Forms\Components\Section::make('Shipping Information')
                     ->schema([
                         Forms\Components\Toggle::make('requires_shipping')
@@ -120,40 +168,58 @@ class ProductResource extends Resource
                             
                         Forms\Components\TextInput::make('package_length')
                             ->numeric()
+                            ->minValue(0)
                             ->suffix('cm'),
                             
                         Forms\Components\TextInput::make('package_width')
                             ->numeric()
+                            ->minValue(0)
                             ->suffix('cm'),
                             
                         Forms\Components\TextInput::make('package_height')
                             ->numeric()
+                            ->minValue(0)
                             ->suffix('cm'),
                             
                         Forms\Components\TextInput::make('package_weight')
                             ->numeric()
+                            ->minValue(0)
                             ->suffix('kg'),
                     ])->columns(2),
                     
+                // Combo Products Section
                 Forms\Components\Section::make('Combo Products')
                     ->schema([
                         Forms\Components\Repeater::make('combo_products')
                             ->schema([
                                 Forms\Components\Select::make('product_id')
-                                    ->relationship('products', 'name')
+                                    ->label('Product')
+                                    ->options(Product::query()->where('type', 'single')->pluck('name', 'id'))
                                     ->searchable()
-                                    ->preload()
-                                    ->required(),
+                                    ->required()
+                                    ->live()
+                                    ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                        if ($state) {
+                                            $product = Product::find($state);
+                                            $set('price', $product->price);
+                                        }
+                                    }),
                                     
                                 Forms\Components\TextInput::make('quantity')
                                     ->numeric()
+                                    ->minValue(1)
                                     ->default(1)
                                     ->required(),
                             ])
                             ->columns(2)
-                            ->visible(fn (Forms\Get $get): bool => $get('type') === 'combo'),
+                            ->visible(fn (Forms\Get $get): bool => $get('type') === 'combo')
+                            ->minItems(1)
+                            ->itemLabel(fn (array $state): ?string => Product::find($state['product_id'])?->name)
+                            ->addActionLabel('Add Product to Combo')
+                            ->reorderable(),
                     ]),
                     
+                // Specifications Section
                 Forms\Components\Section::make('Specifications')
                     ->schema([
                         Forms\Components\KeyValue::make('specifications')
@@ -170,18 +236,22 @@ class ProductResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('images')
                     ->label('Image')
+                    ->circular()
                     ->stacked()
-                    ->limit(1)
-                    ->circular(),
+                    ->limit(1),
                     
                 Tables\Columns\TextColumn::make('product_code')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                     
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
+                    ->wrap(),
                     
                 Tables\Columns\TextColumn::make('category.name')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
@@ -194,11 +264,19 @@ class ProductResource extends Resource
                     ->money()
                     ->sortable(),
                     
+                Tables\Columns\TextColumn::make('discounted_price')
+                    ->label('Selling Price')
+                    ->money()
+                    ->color('success')
+                    ->sortable(),
+                    
                 Tables\Columns\IconColumn::make('is_active')
-                    ->boolean(),
+                    ->boolean()
+                    ->sortable(),
                     
                 Tables\Columns\IconColumn::make('is_featured')
-                    ->boolean(),
+                    ->boolean()
+                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -215,13 +293,16 @@ class ProductResource extends Resource
                         '1' => 'Active',
                         '0' => 'Inactive',
                     ]),
+                Tables\Filters\SelectFilter::make('is_featured')
+                    ->options([
+                        '1' => 'Featured',
+                        '0' => 'Not Featured',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -229,14 +310,10 @@ class ProductResource extends Resource
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
@@ -244,8 +321,15 @@ class ProductResource extends Resource
         return [
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
-            'view' => Pages\ViewProduct::route('/{record}'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                \Illuminate\Database\Eloquent\SoftDeletingScope::class,
+            ]);
     }
 }

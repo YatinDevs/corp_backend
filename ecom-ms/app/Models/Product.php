@@ -45,23 +45,45 @@ class Product extends Model
         'combo_products' => 'array'
     ];
 
+    protected $appends = ['discounted_price', 'package_volume'];
+
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    // Accessor for discounted price
+    public function includedProducts()
+    {
+        return $this->belongsToMany(Product::class, 'combo_products', 'combo_id', 'product_id')
+            ->withPivot('quantity')
+            ->withTimestamps();
+    }
+
     public function getDiscountedPriceAttribute()
     {
         return $this->discount_price ?? $this->price;
     }
 
-    // Calculate package volume
     public function getPackageVolumeAttribute()
     {
         if ($this->package_length && $this->package_width && $this->package_height) {
             return $this->package_length * $this->package_width * $this->package_height;
         }
         return null;
+    }
+
+    public function setComboProductsAttribute($value)
+    {
+        $this->attributes['combo_products'] = is_array($value) ? json_encode($value) : $value;
+    }
+
+    public function scopeSingle($query)
+    {
+        return $query->where('type', 'single');
+    }
+
+    public function scopeCombo($query)
+    {
+        return $query->where('type', 'combo');
     }
 }
