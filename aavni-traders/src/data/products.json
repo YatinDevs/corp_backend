@@ -1,0 +1,172 @@
+{
+  "categories": [
+    "All",
+    "Combo Gift Sets",
+    "Office Diaries",
+    "Pens",
+    "Keychains",
+    "Stainless Steel Bottles",
+    "Travel Bags",
+    "Office Accessories",
+    "Other Products"
+  ],
+  "products": [
+    {
+      "id": "H934",
+      "name": "6 in 1 Premium Gift Set H934",
+      "category": "Combo Gift Sets",
+      "description": "Includes: AS Size Dairy, Flask, Metal Pen, Metal Keychain, Pendrive, Business Card Holder",
+      "price": 2499,
+      "image": "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2032&q=80",
+      "size": "24.7cm × 23.6cm × 8cm",
+      "items": [
+        "AS Size Dairy",
+        "Flask",
+        "Metal Pen",
+        "Metal Keychain",
+        "Pendrive",
+        "Business Card Holder"
+      ]
+    },
+    {
+      "id": "H935",
+      "name": "6 in 1 Premium Gift Set H935",
+      "category": "Combo Gift Sets",
+      "description": "Premium corporate gift set with high-quality items",
+      "price": 2799,
+      "image": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "size": "27cm × 23.3cm × 8cm",
+      "items": [
+        "Notebook dairy",
+        "Water bottle",
+        "Card holder",
+        "Metal keychain",
+        "Metal ball pen",
+        "Pendrive (16GB/32GB)"
+      ],
+      "variants": [
+        {
+          "name": "Pendrive Size",
+          "options": ["16GB", "32GB"]
+        }
+      ]
+    },
+    {
+      "id": "H930",
+      "name": "6 in 1 Premium Gift Set H930",
+      "category": "Combo Gift Sets",
+      "description": "Executive gift set with vacuum flask",
+      "price": 2899,
+      "image": "https://images.unsplash.com/photo-1601784551446-20f9a5d1a9c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "size": "25cm × 25cm × 7.5cm",
+      "items": [
+        "Planner Diary",
+        "Vacuum Flask",
+        "Metal Roller Pen",
+        "Metal Keychain",
+        "Pendrive",
+        "Business Card Holder"
+      ]
+    },
+    {
+      "id": "H951",
+      "name": "5 in 1 Premium Gift Set H951",
+      "category": "Combo Gift Sets",
+      "description": "Complete corporate gifting solution",
+      "price": 2299,
+      "image": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "size": "39.4cm × 25.3cm × 7.5cm",
+      "items": [
+        "A5 Size Diary",
+        "Flask",
+        "Metal Pen",
+        "3 Fold Umbrella",
+        "Pendrive"
+      ]
+    },
+    {
+      "id": "H1078",
+      "name": "Office Planner Diary With Documents Holder H1078",
+      "category": "Office Diaries",
+      "description": "Professional planner with document storage",
+      "price": 899,
+      "image": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
+      "size": "23.5cm × 16.8cm",
+      "specs": {
+        "type": "Planner Diary",
+        "cover": "PU Leather",
+        "pages": 200
+      }
+    },
+    {
+      "id": "H1052",
+      "name": "A5 Size Office Notebook Diary H1052",
+      "category": "Office Diaries",
+      "description": "Classic office notebook with premium finish",
+      "price": 699,
+      "image": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "size": "21.2cm × 14.5cm",
+      "specs": {
+        "cover": "PU Leather",
+        "pages": 232
+      }
+    },
+    {
+      "id": "H277",
+      "name": "Metal Ball Pen H277",
+      "category": "Pens",
+      "description": "Premium metal ball pen with smooth writing",
+      "price": 299,
+      "image": "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+    },
+    {
+      "id": "H512",
+      "name": "Metal Hook Keychain With PU Strap H512",
+      "category": "Keychains",
+      "description": "Durable metal keychain with PU strap",
+      "price": 199,
+      "image": "https://images.unsplash.com/photo-1601784551446-20f9a5d1a9c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "size": "8.8cm × 3.2cm"
+    },
+    {
+      "id": "H055",
+      "name": "Stainless Steel Water Bottle H055",
+      "category": "Stainless Steel Bottles",
+      "description": "Premium stainless steel water bottle, leak-proof",
+      "price": 999,
+      "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
+      "variants": [
+        {
+          "name": "Capacity",
+          "options": ["800ml", "1000ml"]
+        }
+      ]
+    },
+    {
+      "id": "H1543",
+      "name": "Anti Theft Travel Laptop Backpack H1543",
+      "category": "Travel Bags",
+      "description": "Anti-theft design with USB charging port",
+      "price": 2499,
+      "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
+      "size": "47cm × 30cm"
+    },
+    {
+      "id": "H1422",
+      "name": "360° Rotating Metal Laptop Stand H1422",
+      "category": "Office Accessories",
+      "description": "Adjustable metal laptop stand for ergonomic workspace",
+      "price": 1299,
+      "image": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2089&q=80",
+      "size": "26cm × 12cm"
+    },
+    {
+      "id": "H1802",
+      "name": "Multi Functional Table Top Pen Holder With Digital Display Clock H1802",
+      "category": "Other Products",
+      "description": "Features: Alarm, Time, Date, Week, Month, Thermometer",
+      "price": 799,
+      "image": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+    }
+  ]
+}
