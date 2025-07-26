@@ -1,68 +1,74 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Http\Resources\ProductResource;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Display a listing of the products.
+     */
+    public function index()
     {
-        $query = Product::query()->active();
-        
-        if ($request->has('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-        
-        if ($request->has('type')) {
-            $query->where('type', $request->type);
-        }
-        
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%'.$request->search.'%')
-                  ->orWhere('description', 'like', '%'.$request->search.'%');
-        }
-        
-        $products = $query->paginate($request->get('per_page', 15));
-        
-        return response()->json($products);
+        $products = Product::where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return ProductResource::collection($products);
     }
 
-    public function show($id)
-    {
-        $product = Product::with('category')->findOrFail($id);
-        return response()->json($product);
-    }
-
+    /**
+     * Display featured products.
+     */
     public function featured()
     {
-        $products = Product::active()->featured()->get();
-        return response()->json($products);
+        $products = Product::where('is_featured', true)
+            ->where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->limit(8)
+            ->get();
+
+        return ProductResource::collection($products);
     }
 
-    public function comboDetails($id)
+    /**
+     * Display single products only.
+     */
+    public function singleProducts()
     {
-        $product = Product::with('category')->findOrFail($id);
+        $products = Product::where('type', 'single')
+            ->where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return ProductResource::collection($products);
+    }
+
+    /**
+     * Display combo products only.
+     */
+    public function comboProducts()
+    {
+        $products = Product::where('type', 'combo')
+            ->where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return ProductResource::collection($products);
+    }
+
+    /**
+     * Display the specified product.
+     */
+    public function show(Product $product)
+    {
+        // Load related data if needed
+        $product->load('category');
         
-        if ($product->type !== 'combo') {
-            return response()->json(['message' => 'Not a combo product'], 400);
-        }
-        
-        $comboDetails = [
-            'main_product' => $product,
-            'included_products' => Product::whereIn('id', 
-                collect($product->combo_products)->pluck('product_id'))
-                ->get()
-                ->map(function($item) use ($product) {
-                    $comboItem = collect($product->combo_products)
-                        ->firstWhere('product_id', $item->id);
-                    $item->combo_quantity = $comboItem['quantity'];
-                    return $item;
-                }),
-        ];
-        
-        return response()->json($comboDetails);
+        return new ProductResource($product);
     }
 }

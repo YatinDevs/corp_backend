@@ -8,11 +8,19 @@ use App\Http\Controllers\API\{
 
 
 
+// Categories API
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::get('/featured', [CategoryController::class, 'featured']);
+    Route::get('/{category}', [CategoryController::class, 'show']);
+    Route::get('/{category}/products', [CategoryController::class, 'products']);
+});
 
-Route::get('categories', [CategoryController::class, 'index']);
-Route::get('categories/{id}', [CategoryController::class, 'show']);
-
-Route::get('products', [ProductController::class, 'index']);
-Route::get('products/{id}', [ProductController::class, 'show']);
-Route::get('products/combo/{id}', [ProductController::class, 'comboDetails']);
-Route::get('products/featured', [ProductController::class, 'featured']);
+// Products API
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/featured', [ProductController::class, 'featured']);
+    Route::get('/single', [ProductController::class, 'singleProducts']);
+    Route::get('/combo', [ProductController::class, 'comboProducts']);
+    Route::get('/{product}', [ProductController::class, 'show']);
+});
