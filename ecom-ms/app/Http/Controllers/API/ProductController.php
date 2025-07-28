@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the products.
-     */
     public function index()
     {
         $products = Product::where('is_active', true)
@@ -21,9 +19,6 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    /**
-     * Display featured products.
-     */
     public function featured()
     {
         $products = Product::where('is_featured', true)
@@ -35,9 +30,6 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    /**
-     * Display single products only.
-     */
     public function singleProducts()
     {
         $products = Product::where('type', 'single')
@@ -48,9 +40,6 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    /**
-     * Display combo products only.
-     */
     public function comboProducts()
     {
         $products = Product::where('type', 'combo')
@@ -61,14 +50,9 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    /**
-     * Display the specified product.
-     */
     public function show(Product $product)
     {
-        // Load related data if needed
         $product->load('category');
-        
         return new ProductResource($product);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
@@ -10,9 +10,6 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the categories.
-     */
     public function index()
     {
         $categories = Category::where('is_active', true)
@@ -22,9 +19,6 @@ class CategoryController extends Controller
         return CategoryResource::collection($categories);
     }
 
-    /**
-     * Display featured categories with their featured products.
-     */
     public function featured()
     {
         $categories = Category::where('is_active', true)
@@ -41,17 +35,11 @@ class CategoryController extends Controller
         return CategoryResource::collection($categories);
     }
 
-    /**
-     * Display the specified category.
-     */
     public function show(Category $category)
     {
         return new CategoryResource($category->load('products'));
     }
 
-    /**
-     * Display products for a specific category.
-     */
     public function products(Category $category)
     {
         $products = $category->products()
